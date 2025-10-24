@@ -1,4 +1,5 @@
 mod config;
+mod route;
 
 use crate::config::Config;
 use std::{
@@ -31,7 +32,7 @@ async fn main() -> anyhow::Result<()> {
     let listener =
         TcpListener::bind(listening_addr).context("Failed to start listening at given address")?;
 
-    HttpServer::new(move || App::new())
+    HttpServer::new(move || App::new().configure(route::config))
         .listen(listener)
         .context("Http server cannot start listening")?
         .run()

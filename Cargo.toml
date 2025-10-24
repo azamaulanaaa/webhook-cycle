@@ -12,3 +12,6 @@ serde = { version = "1.0", features = ["derive"] }
 simple_logger = "5.0"
 tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
 toml = "0.9"
+utoipa = "5.4"
+utoipa-actix-web = "0.1"
+utoipa-swagger-ui = { version = "9.0", features = ["actix-web"] }
