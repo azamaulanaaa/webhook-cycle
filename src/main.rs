@@ -27,10 +27,7 @@ async fn main() -> anyhow::Result<()> {
 
     init_logger(args.verbose)?;
     let config = Config::try_from(Path::new(&args.config))?;
-
-    let listening_addr = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), config.listen_port);
-    let listener =
-        TcpListener::bind(listening_addr).context("Failed to start listening at given address")?;
+    let listener = init_listener(config.listen_port)?;
 
     HttpServer::new(move || App::new().configure(route::config))
         .listen(listener)
@@ -55,4 +52,12 @@ fn init_logger(verbose: bool) -> anyhow::Result<()> {
         .context("Failed to initiate logger")?;
 
     Ok(())
+}
+
+fn init_listener(port: u16) -> anyhow::Result<TcpListener> {
+    let listening_addr = SocketAddrV4::new(Ipv4Addr::new(0, 0, 0, 0), port);
+    let listener =
+        TcpListener::bind(listening_addr).context("Failed to start listening at given address")?;
+
+    Ok(listener)
 }
