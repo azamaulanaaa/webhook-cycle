@@ -1,4 +1,4 @@
-mod api;
+pub mod api;
 mod health;
 
 use actix_web::web;

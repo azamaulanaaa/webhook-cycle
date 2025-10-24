@@ -5,12 +5,14 @@ use crate::config::Config;
 use std::{
     net::{Ipv4Addr, SocketAddrV4, TcpListener},
     path::Path,
+    sync::Arc,
 };
 
-use actix_web::{App, HttpServer};
+use actix_web::{App, HttpServer, web};
 use anyhow::Context;
 use clap::Parser;
 use simple_logger::SimpleLogger;
+use tokio::sync::RwLock;
 
 #[derive(clap::Parser, Debug)]
 #[command(version)]
@@ -27,14 +29,19 @@ async fn main() -> anyhow::Result<()> {
 
     init_logger(args.verbose)?;
     let config = Config::try_from(Path::new(&args.config))?;
+    let task_router = Arc::new(RwLock::new(config.tasks));
     let listener = init_listener(config.listen_port)?;
 
-    HttpServer::new(move || App::new().configure(route::config))
-        .listen(listener)
-        .context("Http server cannot start listening")?
-        .run()
-        .await
-        .context("Http server is crash")?;
+    HttpServer::new(move || {
+        App::new()
+            .app_data(web::Data::new(task_router.clone()))
+            .configure(route::config)
+    })
+    .listen(listener)
+    .context("Http server cannot start listening")?
+    .run()
+    .await
+    .context("Http server is crash")?;
 
     Ok(())
 }

@@ -1,7 +1,11 @@
+pub mod tasks;
+
 use utoipa::openapi::{Components, Info, OpenApi, OpenApiBuilder};
 use utoipa_actix_web::{OpenApiFactory, scope, service_config::ServiceConfig};
 
-pub fn config(_cfg: &mut ServiceConfig) {}
+pub fn config(cfg: &mut ServiceConfig) {
+    cfg.service(scope("/tasks").configure(tasks::config));
+}
 
 pub fn openapi() -> OpenApi {
     let scope = scope("").configure(config);

@@ -1,3 +1,4 @@
+use crate::route::api::v1::tasks::TaskRouter;
 use std::{fs, path::Path};
 
 use anyhow::Context;
@@ -6,6 +7,7 @@ use serde::Deserialize;
 #[derive(Deserialize)]
 pub struct Config {
     pub listen_port: u16,
+    pub tasks: TaskRouter,
 }
 
 impl TryFrom<&Path> for Config {
