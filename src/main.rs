@@ -9,7 +9,8 @@ struct Args {
     verbose: bool,
 }
 
-fn main() -> anyhow::Result<()> {
+#[tokio::main]
+async fn main() -> anyhow::Result<()> {
     let args = Args::try_parse()?;
 
     init_logger(args.verbose)?;
