@@ -63,7 +63,7 @@ impl TryFrom<&Task> for Command {
     fn try_from(value: &Task) -> Result<Self, Self::Error> {
         let parts: Vec<String> = value.0.split_whitespace().map(|e| e.to_string()).collect();
 
-        let command = parts.get(0).context("No command found")?.to_string();
+        let command = parts.first().context("No command found")?.to_string();
         let args = parts[1..].to_vec();
 
         let mut cmd = Command::new(command);
